@@ -244,7 +244,7 @@
     @keyframes scrollDot { 60% { transform: translateY(7px); opacity: .2; } }
 
     /* ---------- Features ---------- */
-    .features { padding: 60px 0 95px; }
+    .features { padding: 60px 0 95px; scroll-margin-top: 110px; }
     .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 25px; margin-bottom: 32px; }
     h2 { font-size: clamp(32px, 4vw, 49px); line-height: 1.12; letter-spacing: -.05em; font-weight: 600; margin: 14px 0 0; }
     .section-heading > p { color: var(--muted); font-size: 14px; line-height: 1.8; max-width: 270px; margin: 0; }
@@ -285,7 +285,7 @@
     .step p { color: var(--muted); font-size: 14px; line-height: 1.9; max-width: 350px; }
 
     /* ---------- Safety + closing ---------- */
-    .safety { padding: 95px 0; }
+    .safety { padding: 95px 0; scroll-margin-top: 110px; }
     .safety-panel { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 38px; border-radius: var(--radius); }
     .safety-copy { display: flex; align-items: center; gap: 24px; }
     .shield { width: 60px; height: 65px; color: var(--lime); flex-shrink: 0; }
@@ -551,7 +551,7 @@
       .hero-bottom { margin-top: 36px; font-size: 10px; gap: 15px; }
       .section-heading { align-items: start; flex-direction: column; gap: 16px; }
       .section-heading > p { max-width: none; }
-      .features { padding: 45px 0 60px; }
+      .features { padding: 45px 0 60px; scroll-margin-top: 84px; }
       .feature-grid { grid-template-columns: 1fr; }
       .feature { padding: 25px; }
       .feature-icon { margin-bottom: 19px; }
@@ -561,7 +561,7 @@
       .mini-window { max-width: 450px; }
       .step { min-height: 230px; padding: 30px 0; }
       .step h3 { font-size: 25px; }
-      .safety { padding: 60px 0; }
+      .safety { padding: 60px 0; scroll-margin-top: 84px; }
       .safety-panel { padding: 26px; align-items: start; flex-direction: column; gap: 22px; }
       .safety-copy { align-items: start; gap: 16px; }
       .shield { width: 38px; height: 43px; }

@@ -56,6 +56,7 @@
     <nav class="nav glass container" aria-label="Main navigation">
       <a href="#" class="logo" aria-label="Omeet home"><span class="logo-mark"></span>omeet<span class="logo-dot">.</span></a>
       <div class="nav-links">
+        <a href="#why">Why Omeet</a>
         <a href="#how">How it works</a>
         <a href="#safety">Stay safe</a>
       </div>
@@ -250,14 +251,9 @@
           </div>
         </fieldset>
 
-        <label class="consent">
-          <input type="checkbox" id="age-confirmation" required>
-          <span>I am 18 or older and agree to keep conversations respectful.</span>
-        </label>
-
         <label class="consent privacy-consent">
-          <input type="checkbox" id="ip-moderation-consent" required>
-          <span>I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+          <input type="checkbox" id="site-consent" required>
+          <span>I'm 18+, will be respectful, and agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span>
         </label>
 
         <p class="error" id="setup-error" role="alert"></p>
@@ -265,7 +261,7 @@
         <button class="btn btn-primary full" type="submit" id="camera-start">
           Open camera preview <svg class="icon" aria-hidden="true"><use href="#i-video"/></svg>
         </button>
-        <p class="privacy-note">Your browser will ask for camera and microphone access. Video, audio, and chat stay peer-to-peer; Omeet does not view or record calls.</p>
+        <p class="privacy-note">Your match receives your video directly. Authenticated moderators may also view live video for safety. Omeet does not record or transcribe calls.</p>
       </form>
     </div>
   </dialog>
@@ -360,6 +356,6 @@
   </dialog>
 
   <script src="config.js" defer></script>
-  <script src="script.js" defer></script>
+  <script src="script.js?v=20261019-clean-nav1" defer></script>
 </body>
 </html>

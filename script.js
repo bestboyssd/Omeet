@@ -4,6 +4,43 @@
       const $ = selector => document.querySelector(selector);
       const $$ = selector => [...document.querySelectorAll(selector)];
       const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+
+      /* Section links scroll in place and keep the URL free of hash fragments. */
+      const scrollBehavior = () => motionPreference.matches ? "auto" : "smooth";
+      document.addEventListener("click", event => {
+        const anchor = event.target instanceof Element ? event.target.closest('a[href^="#"]') : null;
+        if (!anchor) return;
+
+        event.preventDefault();
+        const fragment = anchor.getAttribute("href").slice(1);
+        if (!fragment) {
+          window.scrollTo({ top: 0, behavior: scrollBehavior() });
+          return;
+        }
+
+        let target;
+        try {
+          target = document.getElementById(decodeURIComponent(fragment));
+        } catch {
+          return;
+        }
+        target?.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+      });
+
+      /* Older shared links may contain a fragment; honor it, then clean the URL. */
+      if (window.location.hash) {
+        let initialTarget;
+        try {
+          initialTarget = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+        } catch {
+          initialTarget = null;
+        }
+        if (initialTarget) {
+          window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
+          requestAnimationFrame(() => initialTarget.scrollIntoView({ behavior: "auto", block: "start" }));
+        }
+      }
+
       const hero = $(".hero");
       const scene = $("#hero-scene");
 
@@ -229,7 +266,7 @@
         if (startButton.disabled) return;
 
         error.textContent = "";
-        liveVideoModerationConsent = $("#ip-moderation-consent").checked;
+        liveVideoModerationConsent = $("#site-consent").checked;
 
         if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
           error.textContent =
@@ -754,7 +791,7 @@
           socket.send(JSON.stringify({
             type: "join",
             gender,
-            videoModerationConsent: $("#ip-moderation-consent").checked
+            videoModerationConsent: $("#site-consent").checked
           }));
         });
         socket.addEventListener("message", event => {
