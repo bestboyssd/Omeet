@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#090a14">
   <meta name="description" content="Omeet — a fresh way to meet someone new. No signup. No ads. Just conversation.">
   <title>Omeet — A hello can change your day.</title>
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261019-responsive-ux2">
 </head>
 
 <body>
@@ -268,8 +268,8 @@
 
   <dialog class="room-dialog" id="room" aria-labelledby="room-title">
     <div class="room-header">
-      <strong id="room-title">Your Omeet room</strong>
-      <span class="pill"><span class="dot"></span><span id="connection-status">Connecting</span></span>
+      <strong id="room-title" tabindex="-1">Your Omeet room</strong>
+      <span class="pill"><span class="dot"></span><span id="connection-status" role="status" aria-live="polite">Connecting</span></span>
     </div>
     <div class="room-grid">
       <div class="remote-video" id="remote-stage">
@@ -370,6 +370,6 @@
   </dialog>
 
   <script src="config.js" defer></script>
-  <script src="script.js?v=20261019-monitor-select1" defer></script>
+  <script src="script.js?v=20261019-responsive-ux2" defer></script>
 </body>
 </html>

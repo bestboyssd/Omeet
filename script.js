@@ -384,6 +384,7 @@
         $("#match-status").textContent = status;
         $("#match-detail").textContent = detail;
         $("#connection-status").textContent = state;
+        $(".room-header .pill").dataset.state = state.toLowerCase().replace(/\s+/g, "-");
       }
 
       function showRoomToast(message) {
@@ -399,6 +400,10 @@
       }
 
       function resetChat() {
+        const chatPanel = $("#chat-panel");
+        if (!chatPanel.hidden && chatPanel.contains(document.activeElement)) {
+          $("#room-title").focus();
+        }
         chatChannel = null;
         $("#chat-toggle").disabled = true;
         $("#chat-toggle").setAttribute("aria-expanded", "false");
@@ -624,12 +629,17 @@
         try {
           if (message.kind === "offer") {
             await connection.setRemoteDescription(message.data);
+            if (peerConnection !== connection) return;
             await flushPendingIce(connection);
+            if (peerConnection !== connection) return;
             const answer = await connection.createAnswer();
+            if (peerConnection !== connection) return;
             await connection.setLocalDescription(answer);
+            if (peerConnection !== connection) return;
             sendSignal("answer", connection.localDescription);
           } else if (message.kind === "answer") {
             await connection.setRemoteDescription(message.data);
+            if (peerConnection !== connection) return;
             await flushPendingIce(connection);
           } else if (message.kind === "ice") {
             if (connection.remoteDescription) {
@@ -639,6 +649,7 @@
             }
           }
         } catch {
+          if (peerConnection !== connection) return;
           setMatchStatus("Call setup was interrupted.", "We couldn't finish connecting.", "Try another person, or retry the connection.", "Connection issue");
           setRetryVisible(true);
         }
@@ -663,11 +674,13 @@
           if (track.kind === "video") videoSenders.push(sender);
         });
         await Promise.all(videoSenders.map(sender => capVideoSender(sender, 800_000)));
+        if (peerConnection !== connection) return;
         connection.onicecandidate = event => {
-          if (event.candidate) sendSignal("ice", event.candidate);
+          if (peerConnection === connection && event.candidate) sendSignal("ice", event.candidate);
         };
         const incomingMedia = new MediaStream();
         connection.ontrack = event => {
+          if (peerConnection !== connection) return;
           const incomingStream = event.streams[0];
           if (incomingStream) {
             remoteVideo.srcObject = incomingStream;
@@ -691,7 +704,9 @@
 
           remoteVideo.play().catch(() => {});
         };
-        connection.ondatachannel = event => setChatReady(event.channel);
+        connection.ondatachannel = event => {
+          if (peerConnection === connection) setChatReady(event.channel);
+        };
         connection.onconnectionstatechange = () => {
           if (peerConnection !== connection) return;
           if (connection.connectionState === "connected") {
@@ -708,7 +723,9 @@
           const channel = connection.createDataChannel("chat", { ordered: true });
           setChatReady(channel);
           const offer = await connection.createOffer();
+          if (peerConnection !== connection) return;
           await connection.setLocalDescription(offer);
+          if (peerConnection !== connection) return;
           sendSignal("offer", connection.localDescription);
         }
       }
@@ -728,6 +745,7 @@
           setRetryVisible(false);
         } else if (message.type === "matched") {
           startPeerConnection(message.peerId).catch(() => {
+            if (currentPeerId !== message.peerId) return;
             setMatchStatus("Call setup was interrupted.", "We couldn't finish connecting.", "Try another person, or retry the connection.", "Connection issue");
             setRetryVisible(true);
           });
