@@ -362,8 +362,7 @@
     .remote-video, .local-video { min-height: 0; border-radius: 20px; background: #090a12; overflow: hidden; position: relative; }
     .remote-video { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; border: 1px dashed #ffffff1c; }
     .remote-video.connected { border-style: solid; }
-    .remote-video > video { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #090a12; }
-    .remote-video.portrait > video { object-fit: contain; }
+    .remote-video > video { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #090a12; }
     .remote-video.connected > video { display: block; }
     .remote-status { position: relative; z-index: 1; width: min(100%, 420px); display: flex; flex-direction: column; align-items: center; }
     .remote-video.connected .remote-status { display: none; }
@@ -371,7 +370,7 @@
     .remote-video .feature-icon { margin-bottom: 20px; }
     .remote-video p { color: var(--muted); font-size: 12px; line-height: 1.8; max-width: 290px; }
     .local-video { position: absolute; z-index: 2; top: 30px; right: max(30px, env(safe-area-inset-right)); width: min(28vw, 360px); aspect-ratio: 4 / 3; border: 1px solid #ffffff2b; box-shadow: 0 20px 60px #0008; }
-    .local-video video { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; transform: scaleX(-1); }
+    .local-video video { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: contain; transform: scaleX(-1); }
     .local-label { position: absolute; left: 15px; bottom: 15px; background: #0007; padding: 7px 11px; border-radius: 100px; font-size: 11px; }
     .camera-off { display: none; position: absolute; inset: 0; background: #171824; place-items: center; color: var(--muted); font-size: 13px; }
     .local-video.off .camera-off { display: grid; }
@@ -405,6 +404,27 @@
     .report-button:hover:not(:disabled) { background: #ff777729; }
     .room-toast { position: absolute; z-index: 8; top: 18px; left: 50%; width: min(520px, calc(100% - 28px)); padding: 13px 17px; transform: translateX(-50%); border: 1px solid #d0ff8a55; border-radius: 15px; background: #151622f5; color: var(--text); box-shadow: 0 16px 50px #0009; font-size: 12px; line-height: 1.6; text-align: center; }
     .room-toast[hidden] { display: none; }
+    @media (min-width: 761px) {
+      .room-grid.chat-open {
+        --room-chat-width: clamp(280px, 25vw, 360px);
+        grid-template-columns: minmax(0, 1fr) var(--room-chat-width);
+        grid-template-rows: minmax(0, 1fr);
+        gap: 16px;
+      }
+      .room-grid.chat-open .remote-video { grid-column: 1; grid-row: 1; }
+      .room-grid.chat-open .local-video { right: calc(var(--room-chat-width) + 46px); }
+      .room-grid.chat-open .chat-panel {
+        position: relative;
+        inset: auto;
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        border-radius: 20px;
+      }
+      .room-grid.chat-open .chat-toggle { display: none; }
+    }
     .report-dialog { overflow-y: auto; }
     .report-dialog h2 { max-width: 330px; }
     .report-field { display: block; margin: 17px 0 8px; color: var(--text); font-size: 12px; }

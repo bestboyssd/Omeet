@@ -104,6 +104,7 @@
       const video = $("#local-video");
       const remoteStage = $("#remote-stage");
       const remoteVideo = $("#remote-video");
+      const roomGrid = $(".room-grid");
 
       let stream = null;
       let requestVersion = 0;
@@ -325,6 +326,7 @@
         $("#chat-input").value = "";
         $("#chat-state").textContent = "Chat opens when you connect";
         $("#chat-panel").hidden = true;
+        roomGrid.classList.remove("chat-open");
         $("#chat-messages").replaceChildren();
         const empty = document.createElement("p");
         empty.className = "chat-empty";
@@ -404,7 +406,7 @@
         currentPeerId = null;
         pendingIce = [];
         remoteVideo.srcObject = null;
-        remoteStage.classList.remove("connected", "portrait");
+        remoteStage.classList.remove("connected");
         resetChat();
       }
 
@@ -485,8 +487,6 @@
           if (event.track.kind === "video") {
             const revealVideo = () => {
               if (peerConnection !== connection || remoteVideo.videoWidth === 0) return;
-              const isPortrait = remoteVideo.videoHeight > remoteVideo.videoWidth;
-              remoteStage.classList.toggle("portrait", isPortrait);
               remoteStage.classList.add("connected");
               setMatchStatus("You're connected.", "Say hello to your new conversation partner.", "Your call is private between your two browsers.", "Connected");
             };
@@ -678,6 +678,7 @@
 
       $("#chat-toggle").addEventListener("click", () => {
         $("#chat-panel").hidden = false;
+        roomGrid.classList.add("chat-open");
         $("#chat-toggle").setAttribute("aria-expanded", "true");
         unreadMessages = 0;
         $("#chat-unread").hidden = true;
@@ -686,6 +687,7 @@
       });
       $("#close-chat").addEventListener("click", () => {
         $("#chat-panel").hidden = true;
+        roomGrid.classList.remove("chat-open");
         $("#chat-toggle").setAttribute("aria-expanded", "false");
         $("#chat-toggle").focus();
       });
@@ -711,7 +713,7 @@
         closePeerConnection();
         stopMedia();
         remoteVideo.srcObject = null;
-        remoteStage.classList.remove("connected", "portrait");
+        remoteStage.classList.remove("connected");
         setRetryVisible(false);
         syncPageLock();
         restoreOpener();
