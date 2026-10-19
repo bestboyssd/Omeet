@@ -2,9 +2,9 @@
 
 Omeet is a static video chat site. The public website source is hosted in this repository and published with GitHub Pages. A Cloudflare Worker matches visitors and relays WebRTC connection details; video, audio, and messages travel directly between browsers.
 
-## Use the site
+## Live site
 
-Visit [bestboyssd.github.io/Omeet](https://bestboyssd.github.io/Omeet/). The site asks for camera and microphone access when you start a call. Both people must be online at the same time. Some networks need a TURN relay for peer-to-peer calls to connect reliably.
+[Open Omeet](https://bestboyssd.github.io/Omeet/). The site asks for camera and microphone access when you start a call. Both people must be online at the same time. Some networks need a TURN relay for peer-to-peer calls to connect reliably.
 
 ## Privacy
 

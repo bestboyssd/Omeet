@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Check out the site
         uses: actions/checkout@v4
+      - name: Publish the app at the Pages root
+        run: cp Omeet.html index.html
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload static site
