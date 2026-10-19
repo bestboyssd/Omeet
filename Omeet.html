@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a14">
+  <meta name="description" content="Omeet — a fresh way to meet someone new. No signup. No ads. Just conversation.">
+  <title>Omeet — A hello can change your day.</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Reusable, dependency-free icons -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true">
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24">
+      <rect x="3" y="6" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="m15 10 6-3v10l-6-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24">
+      <rect x="9" y="3" width="6" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24">
+      <path d="m13 2-9 12h7l-1 8 10-13h-8l1-7Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+      <path d="M20 5c-3-3-7-1-8 1-1-2-5-4-8-1-4 4 1 9 8 15 7-6 12-11 8-15Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M6 18 18 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24">
+      <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-4 2 1.5-4.2A7.5 7.5 0 1 1 20 11.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M8 11h8m-8 3h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-send" viewBox="0 0 24 24">
+      <path d="m21 3-7.2 18-3.8-7-7-3.8L21 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M10 14 21 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <header>
+    <nav class="nav glass container" aria-label="Main navigation">
+      <a href="#" class="logo" aria-label="Omeet home"><span class="logo-mark"></span>omeet<span class="logo-dot">.</span></a>
+      <div class="nav-links">
+        <a href="#why">Why Omeet</a>
+        <a href="#how">How it works</a>
+        <a href="#safety">Stay safe</a>
+      </div>
+      <button class="btn btn-primary btn-small" data-start>
+        Let's talk <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="pill"><span class="dot"></span> A LITTLE RANDOM. A LOT MORE HUMAN.</div>
+            <h1>Your next<br>favorite <span>hello.</span></h1>
+            <p>Different faces. Different places. One real conversation. Meet someone new and see where it goes.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-start>
+                Meet someone new <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </button>
+              <a class="btn" href="#how">How it works <span class="arrow" aria-hidden="true">↘</span></a>
+            </div>
+            <div class="microcopy">
+              <span><b>✓</b> No signup</span>
+              <span><b>✓</b> No ads</span>
+              <span><b>✓</b> Just you</span>
+            </div>
+          </div>
+
+          <div class="scene-wrap" aria-label="Illustrated preview of the Omeet video calling interface">
+            <div class="scene" id="hero-scene" aria-hidden="true">
+              <div class="orbit"></div>
+
+              <div class="video-card card-back glass">
+                <div class="portrait">
+                  <div class="shirt"></div><div class="neck"></div>
+                  <div class="head"><i class="eyes"></i></div>
+                </div>
+                <div class="card-top"><span class="tiny-tag">A new perspective</span></div>
+                <div class="card-bottom">
+                  <div><strong>A new face.</strong><small>A whole new story.</small></div>
+                  <div class="round-icon"><svg class="icon"><use href="#i-mic"/></svg></div>
+                </div>
+              </div>
+
+              <div class="video-card card-front glass">
+                <div class="portrait portrait-two">
+                  <div class="shirt"></div><div class="neck"></div>
+                  <div class="head"><i class="eyes"></i></div>
+                </div>
+                <div class="card-top"><span class="tiny-tag">Room for a real connection</span></div>
+                <div class="card-bottom">
+                  <div><strong>Good energy.</strong><small>Starts with a hello.</small></div>
+                  <div class="round-icon"><svg class="icon"><use href="#i-video"/></svg></div>
+                </div>
+              </div>
+
+              <div class="floating-note note-match glass">
+                <svg class="icon"><use href="#i-spark"/></svg> Less feed. More feeling.
+              </div>
+              <div class="floating-note note-hello glass">
+                <span class="emoji">👋</span> Hey! How's your day?
+              </div>
+            </div>
+            <div class="scene-caption">A GLIMPSE OF YOUR NEXT CONVERSATION · INTERFACE PREVIEW</div>
+          </div>
+        </div>
+
+        <div class="hero-bottom">
+          <span>Made for <strong>spontaneous connections.</strong></span>
+          <a class="scroll-hint" href="#why"><i aria-hidden="true"></i> Scroll to explore</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features container" id="why">
+      <div class="section-heading reveal">
+        <div><span class="eyebrow">Connection, without the complications</span><h2>Less friction.<br>More real moments.</h2></div>
+        <p>The internet could use a little more human. Let's start here.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature glass reveal">
+          <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-bolt"/></svg></div>
+          <h3>Skip the whole signup thing.</h3>
+          <p>No profiles to perfect. No passwords to remember. Just show up as yourself.</p>
+        </article>
+        <article class="feature glass reveal">
+          <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></div>
+          <h3>A little unpredictability.</h3>
+          <p>Step outside your usual circle. Your next conversation could be wonderfully unexpected.</p>
+        </article>
+        <article class="feature glass reveal">
+          <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg></div>
+          <h3>People. Not pop-ups.</h3>
+          <p>A clean, distraction-free space. No ads interrupting a good conversation.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="how" id="how">
+      <div class="container how-grid">
+        <div class="sticky-demo">
+          <span class="eyebrow">Three little steps</span>
+          <h2>A new connection.<br>Not a whole process.</h2>
+          <div class="mini-window glass" aria-hidden="true">
+            <div class="window-bar"><i></i><i></i><i></i><span>omeet / your next hello</span></div>
+            <div class="demo-content">
+              <div class="demo-orb" id="demo-orb">✳</div>
+              <strong id="demo-title">A little about you.</strong>
+              <p id="demo-description">No profile. Just the basics.</p>
+              <div class="demo-progress" id="demo-progress"><i class="active"></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <article class="step reveal" data-step="0">
+            <span class="step-number">01 / SHOW UP</span>
+            <h3>Come as you are.</h3>
+            <p>Choose your gender and confirm you're 18 or older. No account, no bio, no overthinking.</p>
+          </article>
+          <article class="step reveal" data-step="1">
+            <span class="step-number">02 / GET COMFORTABLE</span>
+            <h3>Your camera. Your call.</h3>
+            <p>Allow your camera and microphone, then check your preview. You control when your mic and camera are on.</p>
+          </article>
+          <article class="step reveal" data-step="2">
+            <span class="step-number">03 / SAY SOMETHING</span>
+            <h3>Start with a simple hello.</h3>
+            <p>Once live matching is connected, you'll meet a random person. Be curious, be kind, and leave whenever you want.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="safety container" id="safety">
+      <div class="safety-panel glass reveal">
+        <div class="safety-copy">
+          <svg class="shield" aria-hidden="true"><use href="#i-shield"/></svg>
+          <div>
+            <h3>Good conversations start with respect.</h3>
+            <p>Omeet is for adults 18+. Keep personal information private, respect boundaries, and report behavior that makes you uncomfortable. <a href="privacy.html">See how safety data is handled.</a></p>
+          </div>
+        </div>
+        <span class="safety-label">Be kind. Stay in control.</span>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="reveal">
+        <span class="eyebrow">A small hello. A new possibility.</span>
+        <h2>Someone new.<br>Something unexpected.</h2>
+        <p>You don't need the perfect opening line.</p>
+        <button class="btn btn-primary" data-start>
+          Find your next hello <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <a class="logo" href="#" aria-label="Omeet home"><span class="logo-mark"></span>omeet.</a>
+      <p>© <span id="year">2026</span> Omeet. More human, by design.</p>
+      <a href="privacy.html">Safety &amp; privacy</a>
+    </div>
+  </footer>
+
+  <!-- Native dialog provides focus containment and Escape handling. -->
+  <dialog id="onboarding" aria-labelledby="onboarding-title">
+    <div class="modal-content">
+      <button class="close-btn" id="close-onboarding" aria-label="Close setup">
+        <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+      <span class="eyebrow">Your next hello starts here</span>
+      <h2 id="onboarding-title">First, a little about you.</h2>
+      <p class="modal-intro">No account needed. Set up your camera preview before meeting anyone.</p>
+
+      <form id="setup-form">
+        <fieldset>
+          <legend>What's your gender?</legend>
+          <div class="gender-options">
+            <label class="gender-option">
+              <input type="radio" name="gender" value="male" required>
+              <span>♂ &nbsp; Male</span>
+            </label>
+            <label class="gender-option">
+              <input type="radio" name="gender" value="female" required>
+              <span>♀ &nbsp; Female</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <label class="consent">
+          <input type="checkbox" id="age-confirmation" required>
+          <span>I am 18 or older and agree to keep conversations respectful.</span>
+        </label>
+
+        <label class="consent privacy-consent">
+          <input type="checkbox" id="ip-moderation-consent" required>
+          <span>I agree that Omeet may process my IP address and selected gender for safety and moderation. Admins can see this information. <a href="privacy.html" target="_blank" rel="noopener">Read the privacy notice</a>.</span>
+        </label>
+
+        <p class="error" id="setup-error" role="alert"></p>
+
+        <button class="btn btn-primary full" type="submit" id="camera-start">
+          Open camera preview <svg class="icon" aria-hidden="true"><use href="#i-video"/></svg>
+        </button>
+        <p class="privacy-note">Your browser will ask for camera and microphone access. Video, audio, and chat stay peer-to-peer; Omeet does not view or record calls.</p>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="room-dialog" id="room" aria-labelledby="room-title">
+    <div class="room-header">
+      <strong id="room-title">Your Omeet room</strong>
+      <span class="pill"><span class="dot"></span><span id="connection-status">Connecting</span></span>
+    </div>
+    <div class="room-grid">
+      <div class="remote-video" id="remote-stage">
+        <video id="remote-video" autoplay playsinline aria-label="Your conversation partner"></video>
+        <div class="remote-status" id="remote-status" aria-live="polite">
+          <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></div>
+          <h3 id="match-heading">You're ready for a hello.</h3>
+          <p id="match-status">Looking for someone to connect with…</p>
+          <p id="match-detail">Keep this page open while Omeet finds a conversation partner.</p>
+          <button class="btn btn-small" id="retry-match" type="button" hidden>Try again</button>
+        </div>
+      </div>
+      <div class="local-video" id="local-video-container">
+        <video id="local-video" autoplay muted playsinline aria-label="Your camera preview"></video>
+        <div class="camera-off">Your camera is off</div>
+        <span class="local-label">You</span>
+      </div>
+      <button class="chat-toggle control" id="chat-toggle" type="button" aria-label="Open text chat" aria-controls="chat-panel" aria-expanded="false" title="Open text chat" disabled>
+        <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+        <span class="chat-unread" id="chat-unread" hidden>0</span>
+      </button>
+      <aside class="chat-panel" id="chat-panel" aria-label="Text chat" hidden>
+        <div class="chat-header">
+          <div><strong>Messages</strong><small id="chat-state">Chat opens when you connect</small></div>
+          <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">
+            <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions text">
+          <p class="chat-empty" id="chat-empty">Your messages with this person will appear here.</p>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <input id="chat-input" type="text" maxlength="1000" autocomplete="off" placeholder="Write a message…" aria-label="Write a chat message" disabled>
+          <button class="btn btn-primary btn-small" id="chat-send" type="submit" aria-label="Send message" title="Send message" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
+          </button>
+        </form>
+      </aside>
+      <div class="room-toast" id="room-toast" role="status" aria-live="polite" hidden></div>
+    </div>
+    <div class="room-controls">
+      <button class="control" id="toggle-mic" aria-label="Mute microphone" aria-pressed="false" title="Mute microphone">
+        <svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg>
+      </button>
+      <button class="control" id="toggle-camera" aria-label="Turn camera off" aria-pressed="false" title="Turn camera off">
+        <svg class="icon" aria-hidden="true"><use href="#i-video"/></svg>
+      </button>
+      <button class="control" id="next-match" aria-label="Find another person" title="Find another person" disabled>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </button>
+      <button class="btn report-button" id="report-partner" type="button" disabled>Report</button>
+      <button class="btn leave" id="leave-room">
+        <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg> Leave chat
+      </button>
+    </div>
+    <p class="room-note">Your call and messages travel directly between you and your match.</p>
+  </dialog>
+
+  <dialog class="report-dialog" id="report-dialog" aria-labelledby="report-title">
+    <div class="modal-content">
+      <button class="close-btn" id="close-report" type="button" aria-label="Close report form">
+        <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+      <span class="eyebrow">Community safety</span>
+      <h2 id="report-title">Report this conversation</h2>
+      <p class="modal-intro">Your report goes to the Omeet admin panel. The other person will not see who reported them.</p>
+      <form id="report-form">
+        <label class="report-field" for="report-reason">What happened?</label>
+        <select id="report-reason" required>
+          <option value="">Choose a reason</option>
+          <option value="harassment">Harassment or threats</option>
+          <option value="sexual-content">Unwanted sexual content</option>
+          <option value="hate">Hateful or abusive behavior</option>
+          <option value="under-18">Someone may be under 18</option>
+          <option value="spam">Spam or scam</option>
+          <option value="other">Something else</option>
+        </select>
+        <label class="report-field" for="report-note">Extra detail <span>(optional)</span></label>
+        <textarea id="report-note" maxlength="240" rows="3" placeholder="Add a short note (up to 240 characters)"></textarea>
+        <p class="error" id="report-error" role="alert"></p>
+        <button class="btn btn-primary full" id="submit-report" type="submit">Send report</button>
+      </form>
+    </div>
+  </dialog>
+
+  <script src="config.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>

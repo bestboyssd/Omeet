@@ -1,0 +1,14 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+/admin.html
+/admin.css
+/admin.js
+/cloudflare/
+/wrangler.jsonc
+/package.json
+/package-lock.json
+/serve.js
+/admin-private/
