@@ -258,7 +258,7 @@
     .feature p { font-size: 13px; color: var(--muted); line-height: 1.8; margin: 0; }
 
     /* ---------- Scroll storytelling ---------- */
-    .how { padding: 70px 0; border-block: 1px solid #ffffff0b; background: linear-gradient(110deg, #a799ff05, transparent); }
+    .how { padding: 70px 0; scroll-margin-top: 110px; border-block: 1px solid #ffffff0b; background: linear-gradient(110deg, #a799ff05, transparent); }
     .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: start; }
     .sticky-demo { position: sticky; top: 135px; padding-bottom: 35px; }
     .mini-window { margin-top: 35px; border-radius: 23px; overflow: hidden; }
@@ -555,7 +555,7 @@
       .feature-grid { grid-template-columns: 1fr; }
       .feature { padding: 25px; }
       .feature-icon { margin-bottom: 19px; }
-      .how { padding: 50px 0; }
+      .how { padding: 50px 0; scroll-margin-top: 84px; }
       .how-grid { grid-template-columns: 1fr; gap: 15px; }
       .sticky-demo { position: static; padding-bottom: 0; }
       .mini-window { max-width: 450px; }
