@@ -496,6 +496,17 @@
         return `${monitorId}:${connectionId}`;
       }
 
+      async function capVideoSender(sender, maxBitrate) {
+        try {
+          const parameters = sender.getParameters();
+          if (!parameters.encodings?.length) return;
+          parameters.encodings[0].maxBitrate = maxBitrate;
+          await sender.setParameters(parameters);
+        } catch {
+          // Keep the browser's normal congestion control if bitrate tuning is unsupported.
+        }
+      }
+
       function closeMonitoringConnection(monitorId, connectionId) {
         const key = monitoringConnectionKey(monitorId, connectionId);
         const monitoring = monitoringConnections.get(key);
@@ -554,7 +565,8 @@
               pendingIce: []
             };
             monitoringConnections.set(key, monitoring);
-            stream.getVideoTracks().forEach(track => connection.addTrack(track, stream));
+            const senders = stream.getVideoTracks().map(track => connection.addTrack(track, stream));
+            await Promise.all(senders.map(sender => capVideoSender(sender, 350_000)));
             connection.onicecandidate = event => {
               if (event.candidate) sendMonitoringSignal(monitoring, "ice", event.candidate.toJSON());
             };
@@ -645,7 +657,12 @@
         });
         peerConnection = connection;
 
-        stream?.getTracks().forEach(track => connection.addTrack(track, stream));
+        const videoSenders = [];
+        stream?.getTracks().forEach(track => {
+          const sender = connection.addTrack(track, stream);
+          if (track.kind === "video") videoSenders.push(sender);
+        });
+        await Promise.all(videoSenders.map(sender => capVideoSender(sender, 800_000)));
         connection.onicecandidate = event => {
           if (event.candidate) sendSignal("ice", event.candidate);
         };
