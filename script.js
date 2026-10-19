@@ -404,7 +404,7 @@
         currentPeerId = null;
         pendingIce = [];
         remoteVideo.srcObject = null;
-        remoteStage.classList.remove("connected");
+        remoteStage.classList.remove("connected", "portrait");
         resetChat();
       }
 
@@ -470,17 +470,38 @@
         connection.onicecandidate = event => {
           if (event.candidate) sendSignal("ice", event.candidate);
         };
+        const incomingMedia = new MediaStream();
         connection.ontrack = event => {
-          remoteVideo.srcObject = event.streams[0] || remoteVideo.srcObject;
-          remoteStage.classList.add("connected");
+          const incomingStream = event.streams[0];
+          if (incomingStream) {
+            remoteVideo.srcObject = incomingStream;
+          } else {
+            if (remoteVideo.srcObject !== incomingMedia) remoteVideo.srcObject = incomingMedia;
+            if (!incomingMedia.getTracks().some(track => track.id === event.track.id)) {
+              incomingMedia.addTrack(event.track);
+            }
+          }
+
+          if (event.track.kind === "video") {
+            const revealVideo = () => {
+              if (peerConnection !== connection || remoteVideo.videoWidth === 0) return;
+              const isPortrait = remoteVideo.videoHeight > remoteVideo.videoWidth;
+              remoteStage.classList.toggle("portrait", isPortrait);
+              remoteStage.classList.add("connected");
+              setMatchStatus("You're connected.", "Say hello to your new conversation partner.", "Your call is private between your two browsers.", "Connected");
+            };
+
+            remoteVideo.addEventListener("loadeddata", revealVideo, { once: true });
+            if (remoteVideo.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) revealVideo();
+          }
+
           remoteVideo.play().catch(() => {});
         };
         connection.ondatachannel = event => setChatReady(event.channel);
         connection.onconnectionstatechange = () => {
           if (peerConnection !== connection) return;
           if (connection.connectionState === "connected") {
-            remoteStage.classList.add("connected");
-            setMatchStatus("You're connected.", "Say hello to your new conversation partner.", "Your call is private between your two browsers.", "Connected");
+            setMatchStatus("You're connected.", "Waiting for your partner's video…", "Their camera will appear here as soon as video arrives.", "Connected");
           } else if (connection.connectionState === "failed") {
             setMatchStatus("We couldn't connect this time.", "The call couldn't reach your conversation partner.", "Try another person or check your network connection.", "Connection issue");
             setRetryVisible(true);
@@ -690,7 +711,7 @@
         closePeerConnection();
         stopMedia();
         remoteVideo.srcObject = null;
-        remoteStage.classList.remove("connected");
+        remoteStage.classList.remove("connected", "portrait");
         setRetryVisible(false);
         syncPageLock();
         restoreOpener();
