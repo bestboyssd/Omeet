@@ -107,6 +107,7 @@
       const roomGrid = $(".room-grid");
 
       let stream = null;
+      let liveVideoModerationConsent = false;
       let requestVersion = 0;
       let opener = null;
       let signalingSocket = null;
@@ -120,6 +121,7 @@
       let reportSending = false;
       let blockedAccess = false;
       let toastTimer = 0;
+      const monitoringConnections = new Map();
 
       function syncPageLock() {
         const isLocked = onboarding.open || room.open;
@@ -186,6 +188,7 @@
         if (startButton.disabled) return;
 
         error.textContent = "";
+        liveVideoModerationConsent = $("#ip-moderation-consent").checked;
 
         if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
           error.textContent =
@@ -405,9 +408,105 @@
         }
         currentPeerId = null;
         pendingIce = [];
+        closeAllMonitoringConnections();
         remoteVideo.srcObject = null;
         remoteStage.classList.remove("connected");
         resetChat();
+      }
+
+      function monitoringConnectionKey(monitorId, connectionId) {
+        return `${monitorId}:${connectionId}`;
+      }
+
+      function closeMonitoringConnection(monitorId, connectionId) {
+        const key = monitoringConnectionKey(monitorId, connectionId);
+        const monitoring = monitoringConnections.get(key);
+        if (!monitoring) return;
+        sendMonitoringSignal(monitoring, "close");
+        monitoringConnections.delete(key);
+        monitoring.connection.onicecandidate = null;
+        monitoring.connection.onconnectionstatechange = null;
+        monitoring.connection.close();
+      }
+
+      function closeAllMonitoringConnections() {
+        for (const monitoring of monitoringConnections.values()) {
+          sendMonitoringSignal(monitoring, "close");
+          monitoring.connection.onicecandidate = null;
+          monitoring.connection.onconnectionstatechange = null;
+          monitoring.connection.close();
+        }
+        monitoringConnections.clear();
+      }
+
+      function sendMonitoringSignal(monitoring, kind, data) {
+        if (!signalingSocket || signalingSocket.readyState !== WebSocket.OPEN) return;
+        signalingSocket.send(JSON.stringify({
+          type: "moderation-signal",
+          monitorId: monitoring.monitorId,
+          connectionId: monitoring.connectionId,
+          kind,
+          data
+        }));
+      }
+
+      async function handleMonitoringSignal(message) {
+        if (!liveVideoModerationConsent || !stream?.getVideoTracks().length) {
+          if (message.kind === "offer") {
+            sendMonitoringSignal({ monitorId: message.monitorId, connectionId: message.connectionId }, "error", {
+              message: "The video stream is unavailable for this call."
+            });
+          }
+          return;
+        }
+
+        const key = monitoringConnectionKey(message.monitorId, message.connectionId);
+        let monitoring = monitoringConnections.get(key);
+        try {
+          if (message.kind === "offer") {
+            for (const existing of monitoringConnections.values()) {
+              if (existing.monitorId === message.monitorId) closeMonitoringConnection(existing.monitorId, existing.connectionId);
+            }
+
+            const connection = new RTCPeerConnection({ iceServers: window.OMEET_CONFIG?.iceServers || [] });
+            monitoring = {
+              monitorId: message.monitorId,
+              connectionId: message.connectionId,
+              connection,
+              pendingIce: []
+            };
+            monitoringConnections.set(key, monitoring);
+            stream.getVideoTracks().forEach(track => connection.addTrack(track, stream));
+            connection.onicecandidate = event => {
+              if (event.candidate) sendMonitoringSignal(monitoring, "ice", event.candidate.toJSON());
+            };
+            connection.onconnectionstatechange = () => {
+              if (connection.connectionState === "failed") {
+                showRoomToast("A live safety video connection failed. Your call is still running.");
+                closeMonitoringConnection(message.monitorId, message.connectionId);
+              }
+            };
+            await connection.setRemoteDescription(message.data);
+            for (const candidate of monitoring.pendingIce) {
+              try { await connection.addIceCandidate(candidate); } catch { /* Ignore stale monitoring candidates. */ }
+            }
+            monitoring.pendingIce = [];
+            const answer = await connection.createAnswer();
+            await connection.setLocalDescription(answer);
+            sendMonitoringSignal(monitoring, "answer", connection.localDescription);
+          } else if (message.kind === "ice" && monitoring) {
+            if (monitoring.connection.remoteDescription) {
+              await monitoring.connection.addIceCandidate(message.data);
+            } else {
+              monitoring.pendingIce.push(message.data);
+            }
+          }
+        } catch {
+          if (monitoring) closeMonitoringConnection(message.monitorId, message.connectionId);
+          sendMonitoringSignal({ monitorId: message.monitorId, connectionId: message.connectionId }, "error", {
+            message: "The live video review connection could not be started."
+          });
+        }
       }
 
       function sendSignal(kind, data) {
@@ -539,6 +638,10 @@
           });
         } else if (message.type === "signal") {
           handleSignal(message);
+        } else if (message.type === "moderation-signal") {
+          handleMonitoringSignal(message);
+        } else if (message.type === "moderation-close") {
+          closeMonitoringConnection(message.monitorId, message.connectionId);
         } else if (message.type === "peer-left") {
           closePeerConnection();
           setMatchStatus("Your partner left the chat.", "Looking for someone new…", "Stay here and we'll find another conversation partner.", "Finding someone");
@@ -605,7 +708,11 @@
         socket.addEventListener("open", () => {
           if (signalingSocket !== socket) return;
           const gender = new FormData($("#setup-form")).get("gender");
-          socket.send(JSON.stringify({ type: "join", gender }));
+          socket.send(JSON.stringify({
+            type: "join",
+            gender,
+            videoModerationConsent: liveVideoModerationConsent
+          }));
         });
         socket.addEventListener("message", event => {
           if (signalingSocket === socket) onMatchmakerMessage(event);
@@ -712,6 +819,7 @@
         closeMatchmaker();
         closePeerConnection();
         stopMedia();
+        liveVideoModerationConsent = false;
         remoteVideo.srcObject = null;
         remoteStage.classList.remove("connected");
         setRetryVisible(false);
