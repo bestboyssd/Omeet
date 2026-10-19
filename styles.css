@@ -423,6 +423,27 @@
     }
     @media (max-width: 760px) {
       .container { width: calc(100% - 36px); }
+      #onboarding {
+        width: min(440px, calc(100vw - 28px));
+        max-height: calc(100dvh - 24px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border-radius: 24px;
+      }
+      #onboarding .modal-content { padding: 24px 21px 22px; }
+      #onboarding .close-btn { top: 14px; right: 14px; }
+      #onboarding .eyebrow { font-size: 10px; letter-spacing: .16em; }
+      #onboarding h2 { margin: 18px 0 12px; font-size: 28px; line-height: 1.14; }
+      #onboarding .modal-intro { font-size: 13px; line-height: 1.6; }
+      #onboarding fieldset { margin: 19px 0 15px; }
+      #onboarding legend { margin-bottom: 9px; }
+      #onboarding .gender-options { gap: 8px; }
+      #onboarding .gender-option span { min-height: 54px; padding: 13px 9px; }
+      #onboarding .consent { gap: 9px; font-size: 12px; line-height: 1.55; }
+      #onboarding .privacy-consent { margin-top: 10px; }
+      #onboarding .full { min-height: 52px; margin-top: 18px; }
+      #onboarding .privacy-note { margin-top: 10px; font-size: 11px; line-height: 1.55; }
+      #onboarding #setup-error { margin: 9px 0 0; font-size: 12px; line-height: 1.5; }
       header { top: 12px; }
       .nav { height: 62px; padding-left: 20px; padding-right: 10px; }
       .nav-links { display: none; }

@@ -21,7 +21,7 @@
 
     <section>
       <h2>IP address and VPN checks</h2>
-      <p>Before you can join a call, Omeet receives your public IP address through Cloudflare and checks it for known VPN, proxy, and Tor addresses using <a href="https://proxycheck.io/terms/" target="_blank" rel="noopener">ProxyCheck</a>. If the connection is identified as a VPN, proxy, or Tor address, Omeet will ask you to turn it off before joining. This check relies on a changing address database, so it can miss some services or misclassify a shared network.</p>
+      <p>Before you can join a call, Omeet receives your public IP address through Cloudflare and checks it for known VPN, proxy, and Tor addresses using <a href="https://proxycheck.io/terms/" target="_blank" rel="noopener">ProxyCheck</a>. If the connection is identified as a VPN, proxy, or Tor address, Omeet will ask you to turn it off before joining. If the check service is temporarily unavailable, Omeet allows the connection to continue instead of blocking an unverified visitor. The check relies on a changing address database, so it can miss some services or misclassify a shared network.</p>
       <p>Omeet stores IP addresses with connection timestamps, country and network provider information, session counts, moderation status, and the gender visitors select at setup. Gender is self-reported, visible only to authenticated admins, and is not shared with the person they meet. Recent visitor records without warnings or bans are removed after 90 days without activity. Warning records remain while needed to enforce the three-warning rule; gender attached to those records may remain for the same period. Permanent IP bans remain until an admin removes them.</p>
     </section>
 
