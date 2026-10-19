@@ -333,6 +333,20 @@
     <p class="room-note">Your match receives video, audio, and chat directly. Moderators may view live video for safety; calls are not recorded.</p>
   </dialog>
 
+  <dialog class="moderation-dialog" id="moderation-dialog" aria-labelledby="moderation-title" aria-describedby="moderation-summary moderation-reason">
+    <section class="moderation-card">
+      <span class="moderation-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/><path d="M12 8v4M12 16h.01"/></svg>
+      </span>
+      <span class="eyebrow" id="moderation-eyebrow">Community safety</span>
+      <h2 id="moderation-title">Omeet safety notice</h2>
+      <p class="moderation-summary" id="moderation-summary"></p>
+      <blockquote class="moderation-reason" id="moderation-reason" hidden></blockquote>
+      <p class="moderation-followup" id="moderation-followup"></p>
+      <button class="btn btn-primary full" id="moderation-acknowledge" type="button">I understand</button>
+    </section>
+  </dialog>
+
   <dialog class="report-dialog" id="report-dialog" aria-labelledby="report-title">
     <div class="modal-content">
       <button class="close-btn" id="close-report" type="button" aria-label="Close report form">

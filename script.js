@@ -99,6 +99,7 @@
       const onboarding = $("#onboarding");
       const room = $("#room");
       const reportDialog = $("#report-dialog");
+      const moderationDialog = $("#moderation-dialog");
       const startButton = $("#camera-start");
       const error = $("#setup-error");
       const video = $("#local-video");
@@ -127,6 +128,45 @@
         const isLocked = onboarding.open || room.open;
         document.documentElement.classList.toggle("locked", isLocked);
         document.body.classList.toggle("locked", isLocked);
+      }
+
+      function showWarningNotice(message) {
+        if (blockedAccess) return;
+        moderationDialog.dataset.severity = "warning";
+        $("#moderation-eyebrow").textContent = "Community safety";
+        $("#moderation-title").textContent = "A warning from Omeet moderation";
+        const count = Math.max(1, Number(message.warningCount) || 1);
+        const limit = Math.max(count, Number(message.warningLimit) || 3);
+        $("#moderation-summary").textContent = `Warning ${count} of ${limit}. Please read the message from the moderator:`;
+        const reason = typeof message.reason === "string" ? message.reason.trim() : "";
+        $("#moderation-reason").textContent = reason || "Please follow Omeet's community guidelines.";
+        $("#moderation-reason").hidden = false;
+        $("#moderation-followup").textContent = `Further warnings may permanently block this network from Omeet.`;
+        $("#moderation-acknowledge").hidden = false;
+        if (!moderationDialog.open) moderationDialog.showModal();
+      }
+
+      function showBannedNotice(message, reason = "") {
+        blockedAccess = true;
+        if (reportDialog.open) reportDialog.close();
+        if (onboarding.open) onboarding.close();
+        if (room.open) room.close();
+        else {
+          closeMatchmaker();
+          closePeerConnection();
+          stopMedia();
+        }
+
+        moderationDialog.dataset.severity = "banned";
+        $("#moderation-eyebrow").textContent = "Access blocked";
+        $("#moderation-title").textContent = "You can’t use Omeet right now.";
+        $("#moderation-summary").textContent = message || "This network address has been permanently blocked from Omeet.";
+        const banReason = typeof reason === "string" ? reason.trim() : "";
+        $("#moderation-reason").textContent = banReason;
+        $("#moderation-reason").hidden = !banReason;
+        $("#moderation-followup").textContent = "If you believe this is a mistake, contact the site owner.";
+        $("#moderation-acknowledge").hidden = true;
+        if (!moderationDialog.open) moderationDialog.showModal();
       }
 
       function resetStartButton() {
@@ -176,7 +216,8 @@
           throw new Error("Omeet does not allow VPN, proxy, or Tor connections. Turn it off and try again.");
         }
         if (response.status === 403 && result.reason === "banned") {
-          throw new Error("This network address is blocked from Omeet. Contact the site owner if you think this is a mistake.");
+          showBannedNotice(result.message, result.banReason);
+          throw new Error(result.message || "This network address is blocked from Omeet.");
         }
         if (!response.ok || !result.allowed) {
           throw new Error(result.message || "Omeet couldn't verify this connection. Please try again.");
@@ -647,7 +688,7 @@
           setMatchStatus("Your partner left the chat.", "Looking for someone new…", "Stay here and we'll find another conversation partner.", "Finding someone");
           setRetryVisible(false);
         } else if (message.type === "moderation-warning") {
-          showRoomToast(`Omeet warning ${message.warningCount} of ${message.warningLimit}. ${message.reason || "Please follow the community rules."} A third warning permanently blocks this IP address.`);
+          showWarningNotice(message);
         } else if (message.type === "report-received") {
           reportSending = false;
           reportSubmitted = true;
@@ -662,13 +703,7 @@
           $("#submit-report").textContent = "Send report";
           $("#report-error").textContent = message.message || "Your report couldn't be sent. Try again.";
         } else if (message.type === "access-blocked") {
-          blockedAccess = true;
-          closePeerConnection();
-          stopMedia();
-          $("#toggle-mic").disabled = true;
-          $("#toggle-camera").disabled = true;
-          setMatchStatus("Omeet access is blocked.", message.message || "This network address cannot use Omeet.", "Contact the site owner if you think this is a mistake.", "Blocked");
-          setRetryVisible(false);
+          showBannedNotice(message.message, message.banReason);
         } else if (message.type === "error") {
           setMatchStatus("We couldn't reach the match service.", message.message || "Please try again.", "Check your connection and retry.", "Connection issue");
           setRetryVisible(true);
@@ -814,6 +849,10 @@
       });
 
       $("#leave-room").addEventListener("click", () => room.close());
+      $("#moderation-acknowledge").addEventListener("click", () => moderationDialog.close());
+      moderationDialog.addEventListener("cancel", event => {
+        if (moderationDialog.dataset.severity === "banned") event.preventDefault();
+      });
 
       room.addEventListener("close", () => {
         closeMatchmaker();
