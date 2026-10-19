@@ -143,6 +143,7 @@
       const remoteStage = $("#remote-stage");
       const remoteVideo = $("#remote-video");
       const roomGrid = $(".room-grid");
+      const desktopChatLayout = matchMedia("(min-width: 1001px)");
 
       let stream = null;
       let liveVideoModerationConsent = false;
@@ -314,6 +315,7 @@
           onboarding.close();
           room.showModal();
           syncPageLock();
+          setChatPanelOpen(desktopChatLayout.matches);
           connectToMatchmaker();
 
           // Muted inline playback works on mobile without audio feedback.
@@ -399,6 +401,18 @@
         $("#retry-match").hidden = !visible;
       }
 
+      function setChatPanelOpen(open, focusInput = false) {
+        $("#chat-panel").hidden = !open;
+        roomGrid.classList.toggle("chat-open", open);
+        $("#chat-toggle").setAttribute("aria-expanded", String(open));
+        if (open) {
+          unreadMessages = 0;
+          $("#chat-unread").hidden = true;
+          $("#chat-unread").textContent = "0";
+          if (focusInput) $("#chat-input").focus();
+        }
+      }
+
       function resetChat() {
         const chatPanel = $("#chat-panel");
         if (!chatPanel.hidden && chatPanel.contains(document.activeElement)) {
@@ -406,22 +420,17 @@
         }
         chatChannel = null;
         $("#chat-toggle").disabled = true;
-        $("#chat-toggle").setAttribute("aria-expanded", "false");
         $("#chat-input").disabled = true;
         $("#chat-send").disabled = true;
         $("#chat-input").value = "";
-        $("#chat-state").textContent = "Chat opens when you connect";
-        $("#chat-panel").hidden = true;
-        roomGrid.classList.remove("chat-open");
+        $("#chat-state").textContent = "Connect to start chatting";
+        setChatPanelOpen(desktopChatLayout.matches);
         $("#chat-messages").replaceChildren();
         const empty = document.createElement("p");
         empty.className = "chat-empty";
         empty.id = "chat-empty";
         empty.textContent = "Your messages with this person will appear here.";
         $("#chat-messages").append(empty);
-        unreadMessages = 0;
-        $("#chat-unread").hidden = true;
-        $("#chat-unread").textContent = "0";
       }
 
       function addChatMessage(text, fromSelf) {
@@ -902,19 +911,14 @@
       });
 
       $("#chat-toggle").addEventListener("click", () => {
-        $("#chat-panel").hidden = false;
-        roomGrid.classList.add("chat-open");
-        $("#chat-toggle").setAttribute("aria-expanded", "true");
-        unreadMessages = 0;
-        $("#chat-unread").hidden = true;
-        $("#chat-unread").textContent = "0";
-        $("#chat-input").focus();
+        setChatPanelOpen(true, true);
       });
       $("#close-chat").addEventListener("click", () => {
-        $("#chat-panel").hidden = true;
-        roomGrid.classList.remove("chat-open");
-        $("#chat-toggle").setAttribute("aria-expanded", "false");
+        setChatPanelOpen(false);
         $("#chat-toggle").focus();
+      });
+      desktopChatLayout.addEventListener("change", event => {
+        if (room.open) setChatPanelOpen(event.matches);
       });
       $("#chat-form").addEventListener("submit", event => {
         event.preventDefault();
