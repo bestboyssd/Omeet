@@ -425,6 +425,44 @@
       }
       .room-grid.chat-open .chat-toggle { display: none; }
     }
+    @media (min-width: 1001px) {
+      .room-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: minmax(0, 1fr);
+        gap: 14px;
+      }
+      .room-grid .remote-video { grid-column: 1; grid-row: 1; }
+      .room-grid .local-video {
+        position: relative;
+        top: auto;
+        right: auto;
+        z-index: 1;
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+        box-shadow: none;
+      }
+      .room-grid.chat-open {
+        --room-chat-width: clamp(280px, 24vw, 360px);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) var(--room-chat-width);
+        gap: 14px;
+      }
+      .room-grid.chat-open .remote-video { grid-column: 1; grid-row: 1; }
+      .room-grid.chat-open .local-video { grid-column: 2; grid-row: 1; right: auto; }
+      .room-grid.chat-open .chat-panel {
+        grid-column: 3;
+        grid-row: 1;
+      }
+    }
+    @media (min-width: 1400px) {
+      .room-grid.chat-open {
+        --room-chat-width: clamp(300px, 24vw, 380px);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) var(--room-chat-width);
+        gap: 18px;
+      }
+    }
     .report-dialog { overflow-y: auto; }
     .report-dialog h2 { max-width: 330px; }
     .report-field { display: block; margin: 17px 0 8px; color: var(--text); font-size: 12px; }
