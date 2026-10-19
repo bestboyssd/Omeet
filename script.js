@@ -705,12 +705,20 @@
         } else if (message.type === "access-blocked") {
           showBannedNotice(message.message, message.banReason);
         } else if (message.type === "error") {
-          setMatchStatus("We couldn't reach the match service.", message.message || "Please try again.", "Check your connection and retry.", "Connection issue");
+          if (/reload Omeet and accept the live video moderation notice/i.test(message.message || "")) {
+            setMatchStatus("Please refresh Omeet.", message.message, "Reload to update the consent step, then try again.", "Update required");
+            $("#retry-match").textContent = "Reload Omeet";
+            $("#retry-match").dataset.reload = "true";
+          } else {
+            setMatchStatus("We couldn't reach the match service.", message.message || "Please try again.", "Check your connection and retry.", "Connection issue");
+          }
           setRetryVisible(true);
         }
       }
 
       function connectToMatchmaker() {
+        $("#retry-match").textContent = "Try again";
+        $("#retry-match").dataset.reload = "false";
         closeMatchmaker();
         closePeerConnection();
         clientId = null;
@@ -746,7 +754,7 @@
           socket.send(JSON.stringify({
             type: "join",
             gender,
-            videoModerationConsent: liveVideoModerationConsent
+            videoModerationConsent: $("#ip-moderation-consent").checked
           }));
         });
         socket.addEventListener("message", event => {
@@ -777,7 +785,10 @@
         socket.close();
       }
 
-      $("#retry-match").addEventListener("click", connectToMatchmaker);
+      $("#retry-match").addEventListener("click", () => {
+        if ($("#retry-match").dataset.reload === "true") window.location.reload();
+        else connectToMatchmaker();
+      });
       $("#next-match").addEventListener("click", () => {
         if (!signalingSocket || signalingSocket.readyState !== WebSocket.OPEN) return;
         closePeerConnection();
