@@ -663,10 +663,165 @@
     }
     .local-video.off .camera-off { display: grid; }
 
+    /* Live Audio Wave / Speaking Indicator */
+    .audio-wave {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      height: 12px;
+      vertical-align: middle;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+    }
+    .audio-wave i {
+      display: inline-block;
+      width: 2.5px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--muted);
+      transition: height 0.15s ease, background 0.15s ease;
+    }
+    .audio-wave.speaking {
+      opacity: 1;
+    }
+    .audio-wave.speaking i {
+      background: var(--lime);
+      animation: wave-bounce 0.75s ease-in-out infinite alternate;
+    }
+    .audio-wave.speaking i:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .audio-wave.speaking i:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .audio-wave.speaking i:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes wave-bounce {
+      0% { height: 3px; }
+      50% { height: 12px; }
+      100% { height: 5px; }
+    }
+
+    .local-video.speaking {
+      border-color: rgba(208, 255, 138, 0.7);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 20px rgba(208, 255, 138, 0.35);
+    }
+    .remote-video.speaking {
+      box-shadow: inset 0 0 50px rgba(208, 255, 138, 0.22);
+    }
+
+    /* Flip Camera Button */
+    .control.flip-camera-btn {
+      color: #dedede;
+    }
+    .control.flip-camera-btn.flipping svg {
+      animation: flip-rotate 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes flip-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(180deg); }
+    }
+
+    /* Floating Reactions */
+    .reactions-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(16, 18, 29, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .reaction-btn {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+      user-select: none;
+    }
+    .reaction-btn:hover {
+      transform: scale(1.25);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .reaction-btn:active {
+      transform: scale(0.92);
+    }
+
+    .floating-reactions-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 8;
+    }
+    .floating-reaction {
+      position: absolute;
+      bottom: 90px;
+      font-size: 38px;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      animation: float-bubble 2.2s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+    }
+    @keyframes float-bubble {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.3) rotate(0deg);
+      }
+      15% {
+        opacity: 1;
+        transform: translateY(-40px) scale(1.2) rotate(var(--drift, 0deg));
+      }
+      70% {
+        opacity: 0.95;
+        transform: translateY(-200px) scale(1.05) rotate(calc(var(--drift, 0deg) * 1.5));
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-300px) scale(0.8) rotate(calc(var(--drift, 0deg) * 2));
+      }
+    }
+
+    /* Connection Quality in Pill */
+    .pill.quality-good .dot {
+      background: #55ff77;
+      box-shadow: 0 0 8px #55ff77;
+    }
+    .pill.quality-medium .dot {
+      background: #ffcc00;
+      box-shadow: 0 0 8px #ffcc00;
+    }
+    .pill.quality-poor .dot {
+      background: #ff4444;
+      box-shadow: 0 0 8px #ff4444;
+    }
+    .pill-rtt {
+      margin-left: 6px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      font-family: ui-monospace, monospace;
+      font-weight: 600;
+    }
+
     /* Floating Room Controls Dock */
     .room-controls-wrapper {
       padding: 6px 16px max(14px, env(safe-area-inset-bottom));
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 10;

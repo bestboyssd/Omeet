@@ -271,7 +271,7 @@
       <div class="room-brand" id="room-title" tabindex="-1">
         <span class="logo-mark" aria-hidden="true"></span>omeet<span class="logo-dot">.</span>
       </div>
-      <span class="pill" id="connection-pill"><span class="dot"></span><span id="connection-status" role="status" aria-live="polite">Connecting</span></span>
+      <span class="pill" id="connection-pill"><span class="dot"></span><span id="connection-status" role="status" aria-live="polite">Connecting</span><span id="connection-rtt" class="pill-rtt" hidden></span></span>
     </div>
     <div class="room-grid">
       <div class="remote-video" id="remote-stage">
@@ -281,7 +281,8 @@
             <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
           </svg>
         </button>
-        <span class="partner-label" id="partner-label"><span class="dot"></span> Partner</span>
+        <span class="partner-label" id="partner-label"><span class="dot"></span><span class="audio-wave" id="remote-audio-wave" aria-hidden="true"><i></i><i></i><i></i></span> Partner</span>
+        <div class="floating-reactions-container" id="floating-reactions" aria-hidden="true"></div>
         <div class="remote-status" id="remote-status" aria-live="polite">
           <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></div>
           <h3 id="match-heading">You're ready for a hello.</h3>
@@ -293,7 +294,7 @@
       <div class="local-video" id="local-video-container">
         <video id="local-video" autoplay muted playsinline aria-label="Your camera preview"></video>
         <div class="camera-off">Camera paused</div>
-        <span class="local-label">You</span>
+        <span class="local-label"><span class="audio-wave" id="local-audio-wave" aria-hidden="true"><i></i><i></i><i></i></span> You</span>
       </div>
       <aside class="chat-panel" id="chat-panel" aria-label="Text chat" hidden>
         <div class="chat-header">
@@ -315,18 +316,31 @@
       <div class="room-toast" id="room-toast" role="status" aria-live="polite" hidden></div>
     </div>
     <div class="room-controls-wrapper">
+      <div class="reactions-bar" id="reactions-bar" role="toolbar" aria-label="Quick emoji reactions">
+        <button type="button" class="reaction-btn" data-emoji="❤️" aria-label="Send love reaction" title="React with Love">❤️</button>
+        <button type="button" class="reaction-btn" data-emoji="😂" aria-label="Send laugh reaction" title="React with Laugh">😂</button>
+        <button type="button" class="reaction-btn" data-emoji="👋" aria-label="Send wave reaction" title="React with Wave">👋</button>
+        <button type="button" class="reaction-btn" data-emoji="🔥" aria-label="Send fire reaction" title="React with Fire">🔥</button>
+        <button type="button" class="reaction-btn" data-emoji="👏" aria-label="Send clap reaction" title="React with Clap">👏</button>
+      </div>
       <div class="room-controls" role="toolbar" aria-label="Call controls">
-        <button class="control" id="toggle-mic" aria-label="Mute microphone" aria-pressed="false" title="Mute microphone">
+        <button class="control" id="toggle-mic" aria-label="Mute microphone" aria-pressed="false" title="Mute microphone (M)">
           <svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg>
         </button>
-        <button class="control" id="toggle-camera" aria-label="Turn camera off" aria-pressed="false" title="Turn camera off">
+        <button class="control" id="toggle-camera" aria-label="Turn camera off" aria-pressed="false" title="Turn camera off (V)">
           <svg class="icon" aria-hidden="true"><use href="#i-video"/></svg>
         </button>
-        <button class="control chat-toggle-btn" id="chat-toggle" type="button" aria-label="Open text chat" aria-controls="chat-panel" aria-expanded="false" title="Open text chat" disabled>
+        <button class="control flip-camera-btn" id="flip-camera" type="button" aria-label="Flip camera" title="Flip camera (front / back)">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 10c0-4.4-3.6-8-8-8s-8 3.6-8 8c0 2.2 1 4.2 2.6 5.6L4 20h6v-6l-2.4 2.4C6.1 15.1 5.5 13.6 5.5 12c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5c0 1.6-.6 3.1-2.1 4.4l1.1 1.1C19 15.9 20 13.1 20 10Z"/>
+            <circle cx="12" cy="12" r="3.2"/>
+          </svg>
+        </button>
+        <button class="control chat-toggle-btn" id="chat-toggle" type="button" aria-label="Open text chat" aria-controls="chat-panel" aria-expanded="false" title="Open text chat (C)" disabled>
           <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
           <span class="chat-unread" id="chat-unread" hidden>0</span>
         </button>
-        <button class="control next-btn" id="next-match" aria-label="Next match" title="Find next match" disabled>
+        <button class="control next-btn" id="next-match" aria-label="Next match" title="Find next match (Spacebar)" disabled>
           <span class="next-label">Next</span>
           <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
         </button>
