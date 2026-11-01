@@ -427,33 +427,67 @@
       }
 
       let lastReactionSentTime = 0;
+      let partnerReactionTimer = 0;
 
-      function triggerFloatingReaction(emoji) {
+      function flashPartnerReaction(emoji) {
+        const partnerLabel = $("#partner-label");
+        if (!partnerLabel) return;
+        window.clearTimeout(partnerReactionTimer);
+        const originalHtml = partnerLabel.getAttribute("data-original-label") || partnerLabel.innerHTML;
+        if (!partnerLabel.getAttribute("data-original-label")) {
+          partnerLabel.setAttribute("data-original-label", originalHtml);
+        }
+        partnerLabel.classList.add("has-reaction");
+        partnerLabel.innerHTML = `<span class="dot"></span> <span class="partner-reaction-bubble">${emoji}</span> Partner reacted ${emoji}`;
+        partnerReactionTimer = window.setTimeout(() => {
+          partnerLabel.classList.remove("has-reaction");
+          partnerLabel.innerHTML = partnerLabel.getAttribute("data-original-label") || originalHtml;
+        }, 2400);
+      }
+
+      function triggerFloatingReaction(emoji, isSelf = true) {
         const container = $("#floating-reactions");
         if (!container) return;
         while (container.children.length > 20) {
           container.firstElementChild?.remove();
         }
 
-        const bubble = document.createElement("span");
-        bubble.className = "floating-reaction";
-        bubble.textContent = emoji;
+        const bubble = document.createElement("div");
+        bubble.className = `floating-reaction ${isSelf ? "reaction-self" : "reaction-partner"}`;
 
-        const randomLeft = 20 + Math.random() * 60;
-        const randomDrift = (Math.random() - 0.5) * 40;
-        bubble.style.left = `${randomLeft}%`;
-        bubble.style.setProperty("--drift", `${randomDrift}deg`);
+        const badge = document.createElement("span");
+        badge.className = "reaction-sender";
+        badge.textContent = isSelf ? "You" : "Partner";
+
+        const emo = document.createElement("span");
+        emo.className = "reaction-emoji";
+        emo.textContent = emoji;
+
+        bubble.append(badge, emo);
+
+        const drift = (Math.random() - 0.5) * 16;
+        if (isSelf) {
+          const rightPct = 10 + Math.random() * 16;
+          bubble.style.right = `${rightPct}%`;
+          bubble.style.left = "auto";
+        } else {
+          const leftPct = 10 + Math.random() * 18;
+          bubble.style.left = `${leftPct}%`;
+          bubble.style.right = "auto";
+          flashPartnerReaction(emoji);
+        }
+        bubble.style.setProperty("--drift", `${drift}deg`);
 
         container.append(bubble);
         bubble.addEventListener("animationend", () => bubble.remove());
-        setTimeout(() => bubble.remove(), 2500);
+        setTimeout(() => bubble.remove(), 2800);
       }
 
       function sendReaction(emoji) {
         const now = Date.now();
         if (now - lastReactionSentTime < 250) return;
         lastReactionSentTime = now;
-        triggerFloatingReaction(emoji);
+        triggerFloatingReaction(emoji, true);
         if (chatChannel && chatChannel.readyState === "open") {
           try {
             chatChannel.send(JSON.stringify({ type: "reaction", emoji }));
@@ -776,7 +810,7 @@
             if (message.type === "chat" && typeof message.text === "string") {
               addChatMessage(message.text.slice(0, 1000), false);
             } else if (message.type === "reaction" && typeof message.emoji === "string") {
-              triggerFloatingReaction(message.emoji.slice(0, 8));
+              triggerFloatingReaction(message.emoji.slice(0, 8), false);
             }
           } catch {
             // Ignore malformed peer messages.
