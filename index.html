@@ -7,7 +7,7 @@
   <meta name="description" content="Omeet — a fresh way to meet someone new. No signup. No ads. Just conversation.">
   <title>Omeet — A hello can change your day.</title>
 
-  <link rel="stylesheet" href="styles.css?v=20261019-responsive-ux5">
+  <link rel="stylesheet" href="styles.css?v=20261101-vx1">
 </head>
 
 <body>
@@ -268,12 +268,20 @@
 
   <dialog class="room-dialog" id="room" aria-labelledby="room-title">
     <div class="room-header">
-      <strong id="room-title" tabindex="-1">Your Omeet room</strong>
-      <span class="pill"><span class="dot"></span><span id="connection-status" role="status" aria-live="polite">Connecting</span></span>
+      <div class="room-brand" id="room-title" tabindex="-1">
+        <span class="logo-mark" aria-hidden="true"></span>omeet<span class="logo-dot">.</span>
+      </div>
+      <span class="pill" id="connection-pill"><span class="dot"></span><span id="connection-status" role="status" aria-live="polite">Connecting</span></span>
     </div>
     <div class="room-grid">
       <div class="remote-video" id="remote-stage">
         <video id="remote-video" autoplay playsinline aria-label="Your conversation partner"></video>
+        <button class="video-fit-btn" id="toggle-video-fit" type="button" aria-label="Toggle zoom (Fill screen / Fit whole frame)" title="Toggle zoom (Fill screen / Fit whole frame)">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+          </svg>
+        </button>
+        <span class="partner-label" id="partner-label"><span class="dot"></span> Partner</span>
         <div class="remote-status" id="remote-status" aria-live="polite">
           <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></div>
           <h3 id="match-heading">You're ready for a hello.</h3>
@@ -284,13 +292,9 @@
       </div>
       <div class="local-video" id="local-video-container">
         <video id="local-video" autoplay muted playsinline aria-label="Your camera preview"></video>
-        <div class="camera-off">Your camera is off</div>
+        <div class="camera-off">Camera paused</div>
         <span class="local-label">You</span>
       </div>
-      <button class="chat-toggle control" id="chat-toggle" type="button" aria-label="Open text chat" aria-controls="chat-panel" aria-expanded="false" title="Open text chat" disabled>
-        <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
-        <span class="chat-unread" id="chat-unread" hidden>0</span>
-      </button>
       <aside class="chat-panel" id="chat-panel" aria-label="Text chat" hidden>
         <div class="chat-header">
           <div><strong>Messages</strong><small id="chat-state">Connect to start chatting</small></div>
@@ -310,21 +314,46 @@
       </aside>
       <div class="room-toast" id="room-toast" role="status" aria-live="polite" hidden></div>
     </div>
-    <div class="room-controls">
-      <button class="control" id="toggle-mic" aria-label="Mute microphone" aria-pressed="false" title="Mute microphone">
-        <svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg>
-      </button>
-      <button class="control" id="toggle-camera" aria-label="Turn camera off" aria-pressed="false" title="Turn camera off">
-        <svg class="icon" aria-hidden="true"><use href="#i-video"/></svg>
-      </button>
-      <button class="control" id="next-match" aria-label="Find another person" title="Find another person" disabled>
-        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-      </button>
-      <button class="btn report-button" id="report-partner" type="button" disabled>Report</button>
-      <button class="btn leave" id="leave-room">
-        <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg> Leave chat
-      </button>
+    <div class="room-controls-wrapper">
+      <div class="room-controls" role="toolbar" aria-label="Call controls">
+        <button class="control" id="toggle-mic" aria-label="Mute microphone" aria-pressed="false" title="Mute microphone">
+          <svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg>
+        </button>
+        <button class="control" id="toggle-camera" aria-label="Turn camera off" aria-pressed="false" title="Turn camera off">
+          <svg class="icon" aria-hidden="true"><use href="#i-video"/></svg>
+        </button>
+        <button class="control chat-toggle-btn" id="chat-toggle" type="button" aria-label="Open text chat" aria-controls="chat-panel" aria-expanded="false" title="Open text chat" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+          <span class="chat-unread" id="chat-unread" hidden>0</span>
+        </button>
+        <button class="control next-btn" id="next-match" aria-label="Next match" title="Find next match" disabled>
+          <span class="next-label">Next</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </button>
+        <button class="control report-btn" id="report-partner" type="button" aria-label="Report conversation" title="Report conversation" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+          <span class="report-label">Report</span>
+        </button>
+        <button class="control leave-btn" id="leave-room" aria-label="Leave chat" title="Leave chat">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+          <span class="leave-label">Leave</span>
+        </button>
+      </div>
     </div>
+  </dialog>
+
+  <dialog class="moderation-dialog" id="moderation-dialog" aria-labelledby="moderation-title" aria-describedby="moderation-summary moderation-reason">
+    <section class="moderation-card">
+      <span class="moderation-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/><path d="M12 8v4M12 16h.01"/></svg>
+      </span>
+      <span class="eyebrow" id="moderation-eyebrow">Community safety</span>
+      <h2 id="moderation-title">Omeet safety notice</h2>
+      <p class="moderation-summary" id="moderation-summary"></p>
+      <blockquote class="moderation-reason" id="moderation-reason" hidden></blockquote>
+      <p class="moderation-followup" id="moderation-followup"></p>
+      <button class="btn btn-primary full" id="moderation-acknowledge" type="button">I understand</button>
+    </section>
   </dialog>
 
   <dialog class="report-dialog" id="report-dialog" aria-labelledby="report-title">
@@ -355,6 +384,6 @@
   </dialog>
 
   <script src="config.js" defer></script>
-  <script src="script.js?v=20261019-responsive-ux4" defer></script>
+  <script src="script.js?v=20261101-vx1" defer></script>
 </body>
 </html>

@@ -315,7 +315,7 @@
           onboarding.close();
           room.showModal();
           syncPageLock();
-          setChatPanelOpen(desktopChatLayout.matches);
+          setChatPanelOpen(false);
           connectToMatchmaker();
 
           // Muted inline playback works on mobile without audio feedback.
@@ -386,7 +386,10 @@
         $("#match-status").textContent = status;
         $("#match-detail").textContent = detail;
         $("#connection-status").textContent = state;
-        $(".room-header .pill").dataset.state = state.toLowerCase().replace(/\s+/g, "-");
+        const pill = $("#connection-pill") || $(".room-header .pill");
+        if (pill) {
+          pill.dataset.state = state.toLowerCase().replace(/\s+/g, "-");
+        }
       }
 
       function showRoomToast(message) {
@@ -415,7 +418,8 @@
 
       function resetChat() {
         const chatPanel = $("#chat-panel");
-        if (!chatPanel.hidden && chatPanel.contains(document.activeElement)) {
+        const wasOpen = !chatPanel.hidden;
+        if (wasOpen && chatPanel.contains(document.activeElement)) {
           $("#room-title").focus();
         }
         chatChannel = null;
@@ -424,7 +428,7 @@
         $("#chat-send").disabled = true;
         $("#chat-input").value = "";
         $("#chat-state").textContent = "Connect to start chatting";
-        setChatPanelOpen(desktopChatLayout.matches);
+        setChatPanelOpen(wasOpen);
         $("#chat-messages").replaceChildren();
         const empty = document.createElement("p");
         empty.className = "chat-empty";
@@ -910,15 +914,27 @@
         }
       });
 
+      const fitToggleBtn = $("#toggle-video-fit");
+      function toggleVideoFit() {
+        remoteStage.classList.toggle("fit-contain");
+        const isContain = remoteStage.classList.contains("fit-contain");
+        if (fitToggleBtn) {
+          fitToggleBtn.setAttribute("aria-label", isContain ? "Fill screen" : "Fit whole frame");
+          fitToggleBtn.title = isContain ? "Fill screen" : "Fit whole frame";
+        }
+      }
+      if (fitToggleBtn) {
+        fitToggleBtn.addEventListener("click", toggleVideoFit);
+      }
+      remoteVideo.addEventListener("dblclick", toggleVideoFit);
+
       $("#chat-toggle").addEventListener("click", () => {
-        setChatPanelOpen(true, true);
+        const isOpen = !$("#chat-panel").hidden;
+        setChatPanelOpen(!isOpen, !isOpen);
       });
       $("#close-chat").addEventListener("click", () => {
         setChatPanelOpen(false);
         $("#chat-toggle").focus();
-      });
-      desktopChatLayout.addEventListener("change", event => {
-        if (room.open) setChatPanelOpen(event.matches);
       });
       $("#chat-form").addEventListener("submit", event => {
         event.preventDefault();
