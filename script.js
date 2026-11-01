@@ -300,9 +300,12 @@
             const stats = await peerConnection.getStats();
             let rtt = null;
             stats.forEach(report => {
-              if (report.type === "candidate-pair" && report.state === "succeeded" && report.currentRoundTripTime !== undefined) {
-                rtt = Math.round(report.currentRoundTripTime * 1000);
-              } else if (report.type === "remote-inbound-rtp" && report.roundTripTime !== undefined) {
+              if (report.type === "candidate-pair" && (report.selected || (report.nominated && report.state === "succeeded") || report.state === "succeeded")) {
+                const tripTime = report.currentRoundTripTime ?? report.roundTripTime;
+                if (typeof tripTime === "number") {
+                  rtt = Math.round(tripTime * 1000);
+                }
+              } else if (rtt === null && report.type === "remote-inbound-rtp" && typeof report.roundTripTime === "number") {
                 rtt = Math.round(report.roundTripTime * 1000);
               }
             });
@@ -377,8 +380,19 @@
           }
 
           const newTrack = newStream.getVideoTracks()[0];
+          newStream.getVideoTracks().slice(1).forEach(t => t.stop());
+
           if (newTrack) {
+            if (newTrack.id === oldVideoTrack.id) {
+              newTrack.stop();
+              showRoomToast("No secondary camera available on this device");
+              return;
+            }
+
+            // Preserve camera privacy state (if camera was off, stay off)
+            newTrack.enabled = oldVideoTrack.enabled;
             currentFacingMode = nextFacingMode;
+
             stream.removeTrack(oldVideoTrack);
             oldVideoTrack.stop();
             stream.addTrack(newTrack);
@@ -412,9 +426,15 @@
         }
       }
 
+      let lastReactionSentTime = 0;
+
       function triggerFloatingReaction(emoji) {
         const container = $("#floating-reactions");
         if (!container) return;
+        while (container.children.length > 20) {
+          container.firstElementChild?.remove();
+        }
+
         const bubble = document.createElement("span");
         bubble.className = "floating-reaction";
         bubble.textContent = emoji;
@@ -426,9 +446,13 @@
 
         container.append(bubble);
         bubble.addEventListener("animationend", () => bubble.remove());
+        setTimeout(() => bubble.remove(), 2500);
       }
 
       function sendReaction(emoji) {
+        const now = Date.now();
+        if (now - lastReactionSentTime < 250) return;
+        lastReactionSentTime = now;
         triggerFloatingReaction(emoji);
         if (chatChannel && chatChannel.readyState === "open") {
           try {
@@ -752,7 +776,7 @@
             if (message.type === "chat" && typeof message.text === "string") {
               addChatMessage(message.text.slice(0, 1000), false);
             } else if (message.type === "reaction" && typeof message.emoji === "string") {
-              triggerFloatingReaction(message.emoji);
+              triggerFloatingReaction(message.emoji.slice(0, 8));
             }
           } catch {
             // Ignore malformed peer messages.
@@ -1016,10 +1040,12 @@
             startQualityMonitoring();
           } else if (connection.connectionState === "failed") {
             stopQualityMonitoring();
+            stopRemoteAudioMonitoring();
             setMatchStatus("We couldn't connect this time.", "The call couldn't reach your conversation partner.", "Try another person or check your network connection.", "Connection issue");
             setRetryVisible(true);
           } else if (connection.connectionState === "disconnected") {
             stopQualityMonitoring();
+            stopRemoteAudioMonitoring();
             setMatchStatus("Your connection dropped.", "Trying to restore the call…", "If it doesn't come back, find another person.", "Reconnecting");
           }
         };
@@ -1252,9 +1278,17 @@
         });
       });
 
-      // Desktop Keyboard Navigation: Space (next), M (mic), V (camera), C (chat)
+      // Desktop Keyboard Navigation: Space (next), M (mic), V (camera), C (chat), Esc (close chat)
       window.addEventListener("keydown", event => {
         if (!room.open) return;
+        if ($("#report-dialog")?.open || moderationDialog?.open) return;
+
+        if (event.key === "Escape" && !$("#chat-panel").hidden) {
+          setChatPanelOpen(false);
+          $("#chat-toggle")?.focus();
+          return;
+        }
+
         const target = event.target;
         const isInput = target instanceof HTMLInputElement ||
                         target instanceof HTMLTextAreaElement ||
@@ -1262,6 +1296,7 @@
         if (isInput) return;
 
         if (event.code === "Space" || event.key === " ") {
+          if (target instanceof HTMLButtonElement && target.id !== "next-match") return;
           const nextBtn = $("#next-match");
           if (nextBtn && !nextBtn.disabled) {
             event.preventDefault();

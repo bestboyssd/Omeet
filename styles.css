@@ -415,6 +415,7 @@
       align-items: center;
       gap: 7px;
       transition: all 0.25s ease;
+      white-space: nowrap;
     }
     .room-header .pill[data-state="connected"] {
       border-color: rgba(208, 255, 138, 0.35);
@@ -797,17 +798,20 @@
     }
 
     /* Connection Quality in Pill */
+    .room-header .pill.quality-good .dot,
     .pill.quality-good .dot {
-      background: #55ff77;
-      box-shadow: 0 0 8px #55ff77;
+      background: #55ff77 !important;
+      box-shadow: 0 0 10px #55ff77 !important;
     }
+    .room-header .pill.quality-medium .dot,
     .pill.quality-medium .dot {
-      background: #ffcc00;
-      box-shadow: 0 0 8px #ffcc00;
+      background: #ffcc00 !important;
+      box-shadow: 0 0 10px #ffcc00 !important;
     }
+    .room-header .pill.quality-poor .dot,
     .pill.quality-poor .dot {
-      background: #ff4444;
-      box-shadow: 0 0 8px #ff4444;
+      background: #ff4444 !important;
+      box-shadow: 0 0 10px #ff4444 !important;
     }
     .pill-rtt {
       margin-left: 6px;
@@ -815,6 +819,7 @@
       color: rgba(255, 255, 255, 0.7);
       font-family: ui-monospace, monospace;
       font-weight: 600;
+      flex-shrink: 0;
     }
 
     /* Floating Room Controls Dock */
@@ -1275,7 +1280,8 @@
         gap: 8px;
       }
       .room-brand { font-size: 15px; }
-      .room-header .pill { font-size: 10px; padding: 4px 10px; max-width: 180px; }
+      .room-header .pill { font-size: 10px; padding: 4px 10px; max-width: min(220px, 50vw); }
+      .room-header .pill #connection-status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .room-grid {
         padding: 8px max(10px, env(safe-area-inset-right)) 6px max(10px, env(safe-area-inset-left));
       }
